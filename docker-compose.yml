@@ -1,0 +1,10 @@
+version: '3'
+services:
+    echo-service:
+        build: ./echo-service/
+        environment:
+        - ZMQ_PUB_ADDRESS=tcp://server:3000
+    server:
+        build: ./foxnotdead/
+        environment:
+        - ZMQ_PUB_ADDRESS=tcp://server:3000

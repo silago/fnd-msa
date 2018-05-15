@@ -1,0 +1,7 @@
+[package]
+name = "users-service"
+version = "0.1.0"
+authors = ["silago <silago.nevermind@gmail.com>"]
+
+[dependencies]
+zmq = "0.8"
