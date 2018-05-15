@@ -17,6 +17,7 @@ fn main() {
 
     let mut msg = Message::new().unwrap();
 
+    /*
     for request_nbr in 0..10 {
         println!("Sending Hello {}...", request_nbr);
         requester.send_str("Hello", 0).unwrap();
@@ -24,4 +25,5 @@ fn main() {
         requester.recv(&mut msg, 0).unwrap();
         println!("Received World {}: {}", msg.as_str().unwrap(), request_nbr);
     }
+    */
 }

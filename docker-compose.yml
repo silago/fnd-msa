@@ -1,5 +1,9 @@
 version: '3'
 services:
+    users-service:
+        build: ./users-service/
+        environment:
+        - ZMQ_PUB_ADDRESS=tcp://server:3000
     echo-service:
         build: ./echo-service/
         environment:

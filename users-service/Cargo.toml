@@ -5,3 +5,4 @@ authors = ["silago <silago.nevermind@gmail.com>"]
 
 [dependencies]
 zmq = "0.8"
+rusqlite = "0.13.0"

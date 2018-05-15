@@ -1,33 +1,1 @@
-extern crate zmq;
-use std::env;
-use zmq::Message;
-use std::string::String;
-
-
-fn main() {
-    println!("user-service us connecting to main server...\n");
-    let channel = b"users-service-in";
-    let server_name =  (match  env::var("ZMQ_PUB_ADDRESS") {
-        Ok(v) => v,
-        Err(e) => String::from("tcp://127.0.0.1:3000")
-    });
-
-    let context = zmq::Context::new();
-    let requester = context.socket(zmq::SUB).unwrap();
-    requester.set_subscribe(channel);
-    requester.connect(server_name.as_str());
-
-    loop {
-        let message: String = requester
-            .recv_string(0)
-            .expect("failed receiving update")
-            .unwrap();
-        println!("{}",message);
-        /*
-        got user_name
-        have to find or create user_id
-        return user id to the channel
-        */
-    }
-
-}
+extern crate zmq;use std::env;use zmq::Message;use std::string::String;extern crate rusqlite;use rusqlite::Connection;#[derive(Debug)]struct User {    pub id: i32,    name: String,}fn main() {    let channel = b"users-service";    let server_name =  (match  env::var("ZMQ_PUB_ADDRESS") {        Ok(v) => v,        Err(e) => String::from("tcp://127.0.0.1:3000")    });    let conn = Connection::open("db.db").unwrap();    let context = zmq::Context::new();    let subscriber = context.socket(zmq::SUB).unwrap();    subscriber.set_subscribe(channel);    subscriber.connect(server_name.as_str());    loop {        let topic = subscriber.recv_msg(0).unwrap();        let data = subscriber.recv_string(0).expect("").unwrap();        /*        let message: String = requester            .recv_string(0)            .expect("failed receiving update")            .unwrap();        */        println!("users service got message {}",data);        let mut stmt = conn.prepare("SELECT id, name FROM users where name = 'Silago' or name = ?1 limit 1").unwrap();        let mut person_iter = stmt.query_map(&[&data], |row| {            println!("Got inner");            User {                id: row.get(0),                name: row.get(1)            }        }).unwrap();        for item in person_iter {            let _item = item.unwrap();            println!("{} has id {}", _item.name, _item.id)        }    }}
